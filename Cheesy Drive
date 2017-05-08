@@ -1,0 +1,29 @@
+while(1=1)
+{
+
+//driving////
+
+//forward-backwards
+motor[frontright]=vexRT[Btn3];
+motor[frontleft]=vexRT[Btn3];
+motor[backright]=vexRT[Btn3];
+motor[backleft]=vexRT[Btn3];
+
+if(vexRT[Btn1] >=5)
+{
+motor[frontright]=-vexRT[Btn1];   //if right joystick is pointed right then the robot turns right, on its center
+motor[frontleft]=vexRT[Btn1];
+motor[backright]=-vexRT[Btn1];
+motor[backleft]=vexRT[Btn1];
+}
+
+if(vexRT[Btn1] <=-5)
+{
+motor[frontright]=vexRT[Btn1];   //if right joystick is pointed left then the robot turns left, on its center
+motor[frontleft]=-vexRT[Btn1];
+motor[backright]=vexRT[Btn1];
+motor[backleft]=-vexRT[Btn1];
+}
+
+
+}
