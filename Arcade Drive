@@ -1,0 +1,8 @@
+while(true)
+{
+motor[FR] = vexRT[Ch2];
+motor[FL] = vexRT[Ch3];
+motor[BR] = vexRT[Ch2];
+motor[BL] = vexRT[Ch3];
+
+}
