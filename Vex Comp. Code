@@ -1,25 +1,84 @@
-#pragma platform(VEX)
-
-//Competition Control and Duration Settings
+#pragma platform(VEX2)
 #pragma competitionControl(Competition)
-#pragma autonomousDuration(300)
-#pragma userControlDuration(900)
-
 #include "Vex_Competition_Includes.c"   //Main competition background code...do not modify!
 
 /////////////////////////////////////////////////////////////////////////////////////////
-//
-//                          Pre-Autonomous Functions
-//
-// You may want to perform some actions before the competition starts. Do them in the
-// following function.
-//
+
+                      Pre-Autonomous Functions
+
+//Function to initialize the gyro
+void initGyro()
+{
+	SensorType[in1] = sensorNone;
+	wait1Msec(1000);
+	SensorType[in1] = sensorGyro;
+	wait1Msec(2000);
+	SensorValue[gyro] = 0;
+}
+  
+  //Function to set robot to face a different direction based on gyro value
+void gyroCorrect(int heading, int power)
+{
+	string gyroVal;
+	bool brake;
+	while(SensorValue[gyro] > heading){
+		motor[lFDrive] = -power;
+		motor[lBDrive] = -power;
+		motor[rFDrive] = power;
+		motor[rBDrive] = power;
+		sprintf(gyroVal, "%1.0f", SensorValue[gyro]);
+		displayLCDCenteredString(0, gyroVal);
+		brake = false;
+}
+	while(SensorValue[gyro] < heading)
+	{
+		motor[lFDrive] = power;
+		motor[lBDrive] = power;
+		motor[rFDrive] = -power;
+		motor[rBDrive] = -power;
+		sprintf(gyroVal, "%1.0f", SensorValue[gyro]);
+		displayLCDCenteredString(0, gyroVal);
+		brake = true;
+	}
+	if(brake)
+	{
+		motor[lFDrive] = -5;
+		motor[lBDrive] = -5;
+		motor[rFDrive] = 5;
+		motor[rBDrive] = 5;
+		wait1Msec(200);
+	} 
+	else 
+	{
+		motor[lFDrive] = 5;
+		motor[lBDrive] = 5;
+		motor[rFDrive] = -5;
+		motor[rBDrive] = -5;
+		wait1Msec(200);
+	}
+	stopAllMotors();
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////
 
 void pre_auton()
 {
-	// All activities that occur before the competition starts
-	// Example: clearing encoders, setting servo positions, ...
+	  bStopTasksBetweenModes = true;
+
+  //clear LCD
+  bLCDBacklight = true;
+  clearLCDLine(0);
+	clearLCDLine(1);
+
+  //initialize gyro
+	initGyro();
+
+	//Reset I2C values
+	SensorValue[I2C_1] = 0;
+	SensorValue[I2C_2] = 0;
+
+	//Start LCD Interaction
+	LCDInteraction();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -33,34 +92,7 @@ void pre_auton()
 
 task autonomous()
 {
-  SensorValue[rightEncoder] = 0;  //Clear the right encoder value
-  SensorValue[leftEncoder] = 0;   //Clear the left encoder value
-
-  //While the encoders have spun less than 3 rotations...
-  while(SensorValue[rightEncoder] < 1080)
-  {
-    //Move Forward
-    motor[rightMotor] = 63;
-    motor[leftMotor] = 63;
-  }
-
-
-  //Stop for half a second
-  motor[rightMotor] = 0;
-  motor[leftMotor] = 0;
-  wait1Msec(500);
-
-
-  SensorValue[rightEncoder] = 0;  //Clear the right encoder value
-  SensorValue[leftEncoder] = 0;   //Clear the left encoder value
-
-  //While the right encoder has spun less than 1 rotation...
-  while(SensorValue[leftEncoder] < 360)
-  {
-    //Turn Left
-    motor[rightMotor] = -63;
-    motor[leftMotor] = 63;
-  }
+  
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
