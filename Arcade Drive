@@ -1,8 +1,15 @@
+int tolerance;//goes before task main
+
+tolerance = 15; //tolerance is 15
+
 while(true)
 {
-motor[FR] = vexRT[Ch2];
-motor[FL] = vexRT[Ch3];
-motor[BR] = vexRT[Ch2];
-motor[BL] = vexRT[Ch3];
-
+  if(abs(vexRT[Ch2])>tolerance)//if absolute value of right joystick is greater than tolerance, set right drive motor to value of left joystick
+  {
+    motor[DR] = vexRT[Ch2];
+  }
+  if(abs(vexRT[Ch3])>tolerance)//if absolute value of left joystick is greater than tolerance, set left drive motor to value of left joystick
+  {
+    motor[DL] = vexRT[Ch3];
+  }
 }
