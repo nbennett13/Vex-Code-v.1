@@ -1,0 +1,54 @@
+
+task main()
+{
+int speed;
+int position_1;
+int position_2;
+int home;
+
+speed = 63;//spped that elevator motors will go at
+position_1 = 100;//encoder ticks for position 1
+position_2 = 200;//encoder ticks for position 2
+home = 0; //encoder ticks for home position
+
+if(vexRT[Btn7U] == 1)
+{
+  While(SensorValue(ElevatorEncoder)<position_1)
+  {
+  motor(Elevator)=speed;
+  }
+ if(SensorValue(ElevatorEncoder)=position_1)
+ {
+ motor(Elevator)=0;
+ }
+}
+
+if(vexRT[Btn7L] == 1)//see if either this works better than how pos. 1 is setup
+{
+  While(SensorValue(ElevatorEncoder)<position_2)
+    {
+      motor(Elevator)=speed;
+        
+        if(SensorValue(ElevatorEncoder)=position_2)
+          {
+            motor(Elevator)=0;
+          }
+    }
+}
+
+if(VexRT[Btn7D] ==1)//if encoder value is greater than home pos. run elevator motor backwards until home button is pressede
+{
+  While(SensorValue(ElevatorEncoder) > home)
+    {
+     if(SensorValue(Home_BTN) == 0
+      {
+       motor(Elevator)=-speed;
+      }
+      else
+       {
+         motor(Elevator)=0;
+       }
+      }
+    }
+    sensorValue(ElevatorEncoder)=0;//resets encoder once it reaches home
+}
