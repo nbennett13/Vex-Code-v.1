@@ -1,0 +1,12 @@
+task main()
+{
+  if(SensorValue(ElevatorEncoder)=0)
+    {
+      motor(Intake)=127;
+    }
+  else
+    {
+    motor(Intake) = 0;
+    }
+
+}
