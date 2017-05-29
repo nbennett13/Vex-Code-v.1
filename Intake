@@ -1,12 +1,14 @@
 task main()
 {
-  if(SensorValue(ElevatorEncoder)=0)
+  if(vexRT[btn6U]==1)
     {
-      motor(Intake)=127;
+      motor(IntakeR)=127;
+       motor(IntakeL)=127;
     }
   else
     {
-    motor(Intake) = 0;
+    motor(IntakeR) = 0;
+    motor(IntakeL) = 0;
     }
 
 }
