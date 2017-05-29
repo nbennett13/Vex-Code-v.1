@@ -1,0 +1,151 @@
+#pragma platform(VEX2)
+#pragma competitionControl(Competition)
+#include "Vex_Competition_Includes.c"   //Main competition background code...do not modify!
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+                      Pre-Autonomous Functions
+
+//Function to initialize the gyro
+void initGyro()
+{
+	SensorType[in1] = sensorNone;
+	wait1Msec(1000);
+	SensorType[in1] = sensorGyro;
+	wait1Msec(2000);
+	SensorValue[gyro] = 0;
+}
+  
+  //Function to set robot to face a different direction based on gyro value
+void gyroCorrect(int heading, int power)
+{
+	string gyroVal;
+	bool brake;
+	while(SensorValue[gyro] > heading){
+		motor[lFDrive] = -power;
+		motor[lBDrive] = -power;
+		motor[rFDrive] = power;
+		motor[rBDrive] = power;
+		sprintf(gyroVal, "%1.0f", SensorValue[gyro]);
+		displayLCDCenteredString(0, gyroVal);
+		brake = false;
+}
+	while(SensorValue[gyro] < heading)
+	{
+		motor[lFDrive] = power;
+		motor[lBDrive] = power;
+		motor[rFDrive] = -power;
+		motor[rBDrive] = -power;
+		sprintf(gyroVal, "%1.0f", SensorValue[gyro]);
+		displayLCDCenteredString(0, gyroVal);
+		brake = true;
+	}
+	if(brake)
+	{
+		motor[lFDrive] = -5;
+		motor[lBDrive] = -5;
+		motor[rFDrive] = 5;
+		motor[rBDrive] = 5;
+		wait1Msec(200);
+	} 
+	else 
+	{
+		motor[lFDrive] = 5;
+		motor[lBDrive] = 5;
+		motor[rFDrive] = -5;
+		motor[rBDrive] = -5;
+		wait1Msec(200);
+	}
+	stopAllMotors();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+void pre_auton()
+{
+	  bStopTasksBetweenModes = true;
+
+  //clear LCD
+  bLCDBacklight = true;
+  clearLCDLine(0);
+	clearLCDLine(1);
+
+  //initialize gyro
+	initGyro();
+
+	//Reset I2C values
+	SensorValue[I2C_1] = 0;
+	SensorValue[I2C_2] = 0;
+
+	//Start LCD Interaction
+	LCDInteraction();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+//
+//                                 Autonomous Task
+//
+// This task is used to control your robot during the autonomous phase of a VEX Competition.
+// You must modify the code to add your own robot specific commands here.
+//
+/////////////////////////////////////////////////////////////////////////////////////////
+
+task autonomous()
+{
+  
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+//
+//                                 User Control Task
+//
+// This task is used to control your robot during the user control phase of a VEX Competition.
+// You must modify the code to add your own robot specific commands here.
+//
+/////////////////////////////////////////////////////////////////////////////////////////
+
+task usercontrol()
+{
+	// User control code here, inside the loop
+
+	while (true)
+	{
+	 ///Drive
+    motor[FL] = motor[BL] = vexRT[CH3];
+    motor[FR] = motor[BR] = vexRT[CH2];
+    
+   ///Intake
+   if(vexRT[Btn6U] == 1)
+    {
+    motor[IR]=127;
+    motor[IL]=-127;
+	  }
+  else if(vexRT[Btn6D] == 1)
+    {
+    motor[IR]=-127;
+    motor[IL]=127;
+    }
+  else
+    {
+    motor[IR]=0;
+    motor[IL]=0;
+    }
+    
+    
+    ///lift
+     if(vexRT[Btn5U] == 1)
+    {
+    motor[L1]=127; //check if the motors are going the right direction
+    motor[L2]=-127;
+	  }
+  else if(vexRT[Btn5D] == 1)
+    {
+    motor[L1]=-127; //check if the motors are going the right direction
+    motor[L2]=127;
+    }
+  else
+    {
+    motor[L1]=10; //check if motors are going the right direction and if they are burning up
+    motor[L2]=-10;
+    }
+}
